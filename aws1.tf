@@ -41,29 +41,29 @@ module "aws1" {
   f5xc_aws_vpc_az_nodes = {
     node0 = {
       f5xc_aws_vpc_slo_subnet = "192.168.0.0/26",
-      f5xc_aws_vpc_az_name    = format("%s%s", "eu-south-1", "a")
+      f5xc_aws_vpc_az_name    = format("%s%s", "eu-north-1", "a")
     },
     node1 = {
       f5xc_aws_vpc_slo_subnet = "192.168.0.64/26",
-      f5xc_aws_vpc_az_name    = format("%s%s", "eu-south-1", "b")
+      f5xc_aws_vpc_az_name    = format("%s%s", "eu-north-1", "b")
     },
     node2 = {
       f5xc_aws_vpc_slo_subnet = "192.168.0.128/26",
-      f5xc_aws_vpc_az_name    = format("%s%s", "eu-south-1", "c")
+      f5xc_aws_vpc_az_name    = format("%s%s", "eu-north-1", "c")
     }
   }
   aws_security_group_rules_slo_ingress = []
   aws_security_group_rules_slo_egress  = []
   f5xc_ce_gateway_type                 = "voltstack"
   f5xc_token_name                      = format("%s-aws1", var.project_prefix)
-  f5xc_aws_region                      = "eu-south-1"
+  f5xc_aws_region                      = "eu-north-1"
   f5xc_cluster_latitude                = "45.4"
   f5xc_cluster_longitude               = "9.18"
   f5xc_cluster_name                    = format("%s-aws1", var.project_prefix)
   f5xc_cluster_labels                  = { "site-mesh" : format("%s", var.project_prefix) }
   ssh_public_key                       = file(var.ssh_public_key_file)
   providers = {
-    aws = aws.eu-south-1
+    aws = aws.eu-north-1
   }
 }
 
