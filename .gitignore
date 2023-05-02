@@ -1,0 +1,9 @@
+.env*
+*tfstate*
+*tfvars
+*tfvars.json
+*.p12
+*.crt
+.terraform*
+*.save
+*.json
