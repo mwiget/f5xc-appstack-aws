@@ -8,10 +8,6 @@ terraform {
       source  = "volterraedge/volterra"
       version = ">= 0.11.20"
     }
-    restapi = {
-      source = "Mastercard/restapi"
-      version = "1.18.0"
-    }
   }
 }
 

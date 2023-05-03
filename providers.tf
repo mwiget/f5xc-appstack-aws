@@ -4,15 +4,6 @@ provider "volterra" {
   timeout      = "30s"
 }
 
-provider "restapi" {
-  uri = var.f5xc_api_url
-  create_returns_object = true
-  headers = {
-    Authorization = format("APIToken %s", var.f5xc_api_token)
-    Content-Type  = "application/json"
-  }
-}
-
 provider "aws" {
   region = "eu-north-1"
   alias  = "eu-north-1"

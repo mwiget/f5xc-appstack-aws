@@ -18,14 +18,33 @@ resource "volterra_k8s_cluster" "cluster" {
   use_default_psp = true
 }
 
-resource "restapi_object" "appstack_site_1" {
-  id_attribute = "metadata/name"
-  path         = "/config/namespaces/system/voltstack_sites"
-  data         = local.aws1
+resource "volterra_voltstack_site" "voltstack1" {
+  name      = format("%s-aws1", var.project_prefix)
+  namespace = "system"
+
+  no_bond_devices = true
+  disable_gpu     = true
+
+  k8s_cluster {
+    namespace = "system"
+    name      = volterra_k8s_cluster.cluster.name
+  }
+
+  master_nodes = [
+    format("%s-aws1-node0", var.project_prefix),
+    format("%s-aws1-node1", var.project_prefix),
+    format("%s-aws1-node2", var.project_prefix)
+  ]
+
+  logs_streaming_disabled = true
+  default_network_config  = true
+  default_storage_config  = true
+  deny_all_usb            = true
+  volterra_certified_hw   = "aws-byol-voltstack-combo"
 }
 
 module "aws1" {
-  depends_on     = [restapi_object.appstack_site_1]
+  depends_on     = [volterra_voltstack_site.voltstack1]
   source         = "./modules/f5xc/ce/aws"
   f5xc_tenant    = var.f5xc_tenant
   f5xc_api_url   = var.f5xc_api_url
@@ -67,60 +86,8 @@ module "aws1" {
   }
 }
 
-locals {
-  aws1 = jsonencode(
-    {
-      "metadata" : {
-        "name" : format("%s-aws1", var.project_prefix),
-        "namespace" : "system",
-        "labels" : {
-          "site-mesh" : var.project_prefix
-        },
-        "annotations" : {},
-        "description" : "",
-        "disable" : false
-      },
-      "spec" : {
-        "volterra_certified_hw" : "aws-byol-voltstack-combo",
-        "master_nodes" : [
-          format("%s-aws1-node0", var.project_prefix),
-          format("%s-aws1-node1", var.project_prefix),
-          format("%s-aws1-node2", var.project_prefix)
-        ],
-        "worker_nodes" : [],
-        "no_bond_devices" : {},
-        "default_network_config" : {},
-        "default_storage_config" : {},
-        "disable_gpu" : {},
-        "coordinates" : {
-          "latitude" : 45.4,
-          "longitude" : 9.18
-        },
-        "k8s_cluster" : {
-          "namespace" : "system",
-          "name" : volterra_k8s_cluster.cluster.name,
-          "kind" : "k8s_cluster"
-        },
-        "logs_streaming_disabled" : {},
-        "allow_all_usb" : {},
-        "enable_vm" : {},
-        "default_blocked_services" : {},
-        "sw" : {
-          "default_sw_version" : {}
-        },
-        "os" : {
-          "default_os_version" : {}
-        },
-        "offline_survivability_mode" : {
-          "enable_offline_survivability_mode" : {}
-        }
-      }
-    }
-  )
-}
-
 output "appstack_site_1" {
-  value = restapi_object.appstack_site_1.api_response
+  value = volterra_voltstack_site.voltstack1
 }
 
 output "aws1" {
