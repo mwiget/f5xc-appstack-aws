@@ -30,11 +30,8 @@ resource "volterra_voltstack_site" "voltstack1" {
     name      = volterra_k8s_cluster.cluster.name
   }
 
-  master_nodes = [
-    format("%s-aws1-node0", var.project_prefix),
-    format("%s-aws1-node1", var.project_prefix),
-    format("%s-aws1-node2", var.project_prefix)
-  ]
+  master_nodes = formatlist("${var.project_prefix}-aws1-node%s", range(0,var.master_nodes_count))
+  worker_nodes = var.worker_nodes_count > 0 ? formatlist("${var.project_prefix}-aws1-worker%s", range(0,var.worker_nodes_count)) : []
 
   logs_streaming_disabled = true
   default_network_config  = true
@@ -51,8 +48,6 @@ module "aws1" {
   f5xc_namespace = var.f5xc_namespace
   f5xc_api_token = var.f5xc_api_token
   f5xc_api_ca_cert = var.f5xc_api_ca_cert
-  maurice_endpoint      = var.maurice_endpoint
-  maurice_mtls_endpoint = var.maurice_mtls_endpoint
   owner_tag          = var.owner
   has_public_ip      = true
   is_sensitive       = false
@@ -69,6 +64,14 @@ module "aws1" {
     node2 = {
       f5xc_aws_vpc_slo_subnet = "192.168.0.128/26",
       f5xc_aws_vpc_az_name    = format("%s%s", "eu-north-1", "c")
+    },
+    worker0 = {
+      f5xc_aws_vpc_slo_subnet = "192.168.1.0/26",
+      f5xc_aws_vpc_az_name    = format("%s%s", "eu-north-1", "a")
+    },
+    worker1 = {
+      f5xc_aws_vpc_slo_subnet = "192.168.1.64/26",
+      f5xc_aws_vpc_az_name    = format("%s%s", "eu-north-1", "b")
     }
   }
   aws_security_group_rules_slo_ingress = []
@@ -92,4 +95,8 @@ output "appstack_site_1" {
 
 output "aws1" {
   value = module.aws1
+}
+
+output "aws1_vpc_id" {
+  value = module.aws1.ce.nodes.node0.network.common.vpc.id 
 }

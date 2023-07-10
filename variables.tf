@@ -50,12 +50,12 @@ variable "f5xc_vm_template" {
   default = ""
 }
 
-variable "maurice_endpoint" {
-  type    = string
-  default = "https://register.ves.volterra.io"
+variable "master_nodes_count" {
+  type = number
+  default = 3		# currently only 3 nodes are supported by this repo
 }
 
-variable "maurice_mtls_endpoint" {
-  type    = string
-  default = "https://register-tls.ves.volterra.io"
-} 
+variable "worker_nodes_count" {
+  type = number
+  default = 0
+}
