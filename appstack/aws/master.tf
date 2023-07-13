@@ -27,3 +27,10 @@ resource "aws_instance" "master" {
   }
 }
 
+resource "aws_lb_target_group_attachment" "volterra_ce_attachment" {
+  count            = var.master_nodes_count == 3 ? 3 : 0
+  target_group_arn = aws_lb_target_group.controllers.id
+  target_id        = aws_instance.master[count.index].id
+  port             = 6443
+}
+
