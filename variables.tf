@@ -59,3 +59,13 @@ variable "worker_nodes_count" {
   type = number
   default = 0
 }
+
+variable "f5xc_registration_wait_time" {
+    type    = number
+    default = 60
+}
+
+variable "f5xc_registration_retry" {
+    type    = number
+    default = 20
+}
