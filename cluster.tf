@@ -44,7 +44,7 @@ resource "volterra_voltstack_site" "cluster" {
 resource "volterra_registration_approval" "master" {
   depends_on   = [volterra_voltstack_site.cluster]
   for_each     = toset([for node in module.aws1.appstack.master : split(".", node.private_dns)[0]])
-  cluster_name = volterra_k8s_cluster.cluster.name
+  cluster_name = volterra_voltstack_site.cluster.name
   cluster_size = var.master_nodes_count
   hostname     = each.key
   wait_time    = var.f5xc_registration_wait_time
@@ -54,7 +54,7 @@ resource "volterra_registration_approval" "master" {
 resource "volterra_registration_approval" "worker" {
   depends_on   = [volterra_voltstack_site.cluster]
   for_each     = toset([for node in module.aws1.appstack.worker : split(".", node.private_dns)[0]])
-  cluster_name = volterra_k8s_cluster.cluster.name
+  cluster_name = volterra_voltstack_site.cluster.name
   cluster_size = var.master_nodes_count
   hostname     = each.key
   wait_time    = var.f5xc_registration_wait_time
