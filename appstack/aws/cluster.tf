@@ -1,5 +1,5 @@
 resource "volterra_k8s_cluster" "cluster" {
-  name      = format("%s-aws1-k8s", var.project_prefix)
+  name      = var.f5xc_cluster_name
   namespace = "system"
 
   no_cluster_wide_apps              = true
@@ -12,15 +12,15 @@ resource "volterra_k8s_cluster" "cluster" {
   no_insecure_registries       = true
 
   local_access_config {
-    local_domain = format("%s-aws1.local", var.project_prefix)
+    local_domain = format("%s.local", var.f5xc_cluster_name)
     default_port = true
   }
   use_default_psp = true
 }
 
 resource "volterra_voltstack_site" "cluster" {
-  depends_on  = [ module.aws1 ]
-  name        = format("%s-aws1", var.project_prefix)
+  depends_on  = [ aws_instance.master, aws_instance.worker ]
+  name        = var.f5xc_cluster_name
   namespace   = "system"
 
   no_bond_devices = true
@@ -31,8 +31,8 @@ resource "volterra_voltstack_site" "cluster" {
     name      = volterra_k8s_cluster.cluster.name
   }
 
-  master_nodes = [ for node in module.aws1.appstack.master : split(".", node.private_dns)[0] ]
-  worker_nodes = [ for node in module.aws1.appstack.worker : split(".", node.private_dns)[0] ]
+  master_nodes = [ for node in aws_instance.master : split(".", node.private_dns)[0] ]
+  worker_nodes = [ for node in aws_instance.worker : split(".", node.private_dns)[0] ]
 
   logs_streaming_disabled = true
   default_network_config  = true
@@ -43,20 +43,20 @@ resource "volterra_voltstack_site" "cluster" {
 
 resource "volterra_registration_approval" "master" {
   depends_on   = [volterra_voltstack_site.cluster]
-  for_each     = toset([for node in module.aws1.appstack.master : split(".", node.private_dns)[0]])
+  count        = var.master_nodes_count
   cluster_name = volterra_voltstack_site.cluster.name
   cluster_size = var.master_nodes_count
-  hostname     = each.key
+  hostname     = split(".", aws_instance.master[count.index].private_dns)[0]
   wait_time    = var.f5xc_registration_wait_time
   retry        = var.f5xc_registration_retry
 }
 
 resource "volterra_registration_approval" "worker" {
   depends_on   = [volterra_voltstack_site.cluster]
-  for_each     = toset([for node in module.aws1.appstack.worker : split(".", node.private_dns)[0]])
+  count        = var.worker_nodes_count
   cluster_name = volterra_voltstack_site.cluster.name
   cluster_size = var.master_nodes_count
-  hostname     = each.key
+  hostname     = split(".", aws_instance.worker[count.index].private_dns)[0]
   wait_time    = var.f5xc_registration_wait_time
   retry        = var.f5xc_registration_retry
 }
