@@ -27,7 +27,7 @@ module "appstack" {
   ssh_public_key        = file(var.ssh_public_key_file)
 }
 
-output "aws1" {
-  value = module.aws1
+output "appstack" {
+  value = module.appstack
 }
 
