@@ -18,8 +18,3 @@ terraform apply
 
 (The registration resource is created for every deployed node, which is only known after the cluster nodes have been deployed).
 
-Open issues:
-
-- worker nodes don't join the cluster yet
-
-

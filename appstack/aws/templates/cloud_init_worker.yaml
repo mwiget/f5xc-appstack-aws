@@ -47,5 +47,6 @@ write_files:
       makestep 0.1 3
       rtcsync
 bootcmd:
-  - host ${nlb} | awk '{print $4}' | grep `hostname -i|cut -d'.' -f1,2,3` | xargs printf -- "%s vip" >> /etc/hosts
+  - sed -i '/vip/d' /etc/hosts
+  - host ${nlb} | head -1 | awk '{print $4}' | xargs printf -- "%s vip" >> /etc/hosts
 
