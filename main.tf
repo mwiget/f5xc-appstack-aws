@@ -1,4 +1,4 @@
-module "aws1" {
+module "appstack" {
   source                = "./appstack/aws"
   f5xc_tenant           = var.f5xc_tenant
   f5xc_api_url          = var.f5xc_api_url
@@ -12,6 +12,8 @@ module "aws1" {
   f5xc_cluster_labels   = { "site-mesh" : format("%s", var.project_prefix) }
   master_nodes_count    = var.master_nodes_count
   worker_nodes_count    = var.worker_nodes_count
+  instance_type_master  = "t3.xlarge"
+  instance_type_worker  = "t3.xlarge"
   aws_vpc_cidr_block    = "192.168.0.0/20"
   f5xc_aws_region       = "eu-north-1"
   vpc_subnets           = [
