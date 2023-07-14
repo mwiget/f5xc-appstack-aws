@@ -13,7 +13,8 @@ f5xc_api_p12_file = "<path to api-creds.p12 file>"
 # f5xc_api_p12_file     = "<path to api-creds.p12 file>"
 # f5xc_tenant           = ""
 # f5xc_api_token        = ""
-# maurice_endpoint      = "https://register.staging.volterra.us"
-# maurice_mtls_endpoint = "https://register-tls.staging.volterra.us"
 
 ssh_public_key_file = "<path to id_rsa.pub file>"
+
+master_nodes_count    = 3
+worker_nodes_count    = 1
