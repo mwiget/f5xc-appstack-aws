@@ -9,6 +9,7 @@ output "appstack" {
     subnet_ids    = [ for subnet in aws_subnet.slo : subnet.id ]
     gateway       = aws_internet_gateway.gateway
     nlb           = aws_lb.nlb
+    ssh_key       = aws_key_pair.aws_key
     security_group = resource.aws_security_group.allow_traffic
     iam    = {
       role             = aws_iam_role.role
@@ -16,9 +17,9 @@ output "appstack" {
       attachment       = aws_iam_role_policy_attachment.attachment
       instance_profile = aws_iam_instance_profile.instance_profile
     }
-    ssh_key = aws_key_pair.aws_key
-    #    nlb     = length(var.f5xc_aws_vpc_az_nodes) == 3 ? {
-    #      nlb = module.network_nlb[0].nlb
-    #    } : null
   }
+}
+
+output "kubeconfig" {
+  value = local_file.kubeconfig.filename
 }
