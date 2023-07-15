@@ -23,4 +23,5 @@ locals {
       "Server" : "vip"
     }
   })
+  kubeconfig = format("./%s.kubeconfig", var.f5xc_cluster_name)
 }
