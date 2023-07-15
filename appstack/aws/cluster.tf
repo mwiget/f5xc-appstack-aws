@@ -72,12 +72,3 @@ resource "volterra_registration_approval" "worker" {
   retry        = var.f5xc_registration_retry
 }
 
-# do I need decommission for appstack nodes?
-#resource "volterra_site_state" "decommission_when_delete" {
-#  depends_on = [volterra_registration_approval.master]
-#  name       = var.f5xc_node_name
-#  when       = "delete"
-#  state      = "DECOMMISSIONING"
-#  wait_time  = var.f5xc_registration_wait_time
-#  retry      = var.f5xc_registration_retry
-#}
