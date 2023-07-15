@@ -72,3 +72,21 @@ resource "volterra_registration_approval" "worker" {
   retry        = var.f5xc_registration_retry
 }
 
+resource "time_offset" "exp_time" {
+  offset_days = 30
+}
+
+data "http" "kubeconfig" {
+  url    =  format("%s/web/namespaces/system/sites/%s/global-kubeconfigs", var.f5xc_api_url, var.f5xc_cluster_name)
+  method = "POST"
+  request_headers = {
+    Authorization = format("APIToken %s", var.f5xc_api_token)
+  }
+  request_body = jsonencode({expiration_timestamp: time_offset.exp_time.rfc3339, site: var.f5xc_cluster_name})
+}
+
+resource "local_file" "kubeconfig" {
+  content  = data.http.kubeconfig.body
+  filename = format("./%s.kubeconfig", var.f5xc_cluster_name)
+}
+

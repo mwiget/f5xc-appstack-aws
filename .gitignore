@@ -7,3 +7,4 @@
 .terraform*
 *.save
 *.json
+.kubeconfig
