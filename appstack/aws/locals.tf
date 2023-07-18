@@ -16,6 +16,8 @@ locals {
       "MauricePrivateEndpoint" : module.maurice.endpoints.maurice_mtls,
       "MauriceEndpoint" : module.maurice.endpoints.maurice,
       "Labels" : var.f5xc_cluster_labels,
+      "Latitude" : var.f5xc_cluster_latitude,
+      "Longitude" : var.f5xc_cluster_longitude,
       "CertifiedHardwareEndpoint" : "https://vesio.blob.core.windows.net/releases/certified-hardware/aws.yml"
     }
     Kubernetes : {

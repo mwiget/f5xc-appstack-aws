@@ -12,6 +12,8 @@ module "appstack" {
   f5xc_cluster_labels   = { "site-mesh" : format("%s", var.project_prefix) }
   master_nodes_count    = var.master_nodes_count
   worker_nodes_count    = var.worker_nodes_count
+  f5xc_cluster_latitude = 59
+  f5xc_cluster_longitude = 18
   instance_type_master  = "t3.xlarge"
   instance_type_worker  = "t3.xlarge"
   aws_vpc_cidr_block    = "192.168.0.0/20"

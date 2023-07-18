@@ -2,6 +2,16 @@ variable "is_sensitive" {
   type = bool
 }
 
+variable "f5xc_cluster_latitude" {
+  type = number
+  default = 37
+}
+
+variable "f5xc_cluster_longitude" {
+  type = number
+  default = -121
+}
+
 variable "has_public_ip" {
   type    = bool
   default = true
